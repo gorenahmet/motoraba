@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motoraba — Araç Hizmetleri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a0f1e;
+    --navy2: #0d1530;
+    --navy3: #111b3a;
+    --steel: #1a2550;
+    --accent: #3b82f6;
+    --accent2: #60a5fa;
+    --cyan: #06b6d4;
+    --white: #f0f4ff;
+    --muted: #6b7fa8;
+    --card: rgba(255,255,255,0.03);
+    --border: rgba(59,130,246,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid rgba(59,130,246,0.5);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    transition: transform 0.18s ease, width 0.2s, height 0.2s;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.35;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: linear-gradient(to bottom, rgba(10,15,30,0.95), transparent);
+    backdrop-filter: blur(2px);
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 3px;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .logo span { color: var(--accent); }
+  nav ul { list-style: none; display: flex; gap: 36px; }
+  nav ul a {
+    text-decoration: none; color: var(--muted);
+    font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
+    transition: color 0.3s;
+    font-family: 'Space Mono', monospace;
+  }
+  nav ul a:hover { color: var(--accent2); }
+  .nav-btn {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent2);
+    padding: 8px 22px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: none;
+    transition: all 0.3s;
+  }
+  .nav-btn:hover {
+    background: var(--accent);
+    color: var(--navy);
+  }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Grid lines background */
+  #hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(59,130,246,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 10vw, 10rem);
+    line-height: 0.92;
+    letter-spacing: 2px;
+    max-width: 900px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.35s forwards;
+  }
+  .hero-title em {
+    font-style: normal;
+    -webkit-text-stroke: 1.5px var(--accent);
+    color: transparent;
+  }
+
+  .hero-sub {
+    margin-top: 32px;
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 440px;
+    line-height: 1.7;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.55s forwards;
+  }
+
+  .hero-ctas {
+    display: flex; gap: 16px; margin-top: 44px;
+    opacity: 0; animation: fadeUp 0.9s 0.7s forwards;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--navy);
+    padding: 14px 36px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none; cursor: none;
+    transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-2px); }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 14px 36px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: none;
+    transition: all 0.3s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent2); }
+
+  /* Floating car visual */
+  .hero-visual {
+    position: absolute; right: -60px; top: 50%;
+    transform: translateY(-50%);
+    width: 600px; height: 400px;
+    opacity: 0; animation: fadeLeft 1.2s 0.8s forwards;
+  }
+  .car-svg {
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 0 60px rgba(59,130,246,0.3));
+  }
+
+  /* Glow orb */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(80px);
+  }
+  .orb-1 { width: 500px; height: 500px; background: rgba(59,130,246,0.1); top: -100px; right: 100px; }
+  .orb-2 { width: 300px; height: 300px; background: rgba(6,182,212,0.07); bottom: 50px; left: 200px; }
+
+  /* Scroll indicator */
+  .scroll-hint {
+    position: absolute; bottom: 36px; left: 48px;
+    display: flex; align-items: center; gap: 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 3px;
+    color: var(--muted); text-transform: uppercase;
+    opacity: 0; animation: fadeUp 1s 1.2s forwards;
+  }
+  .scroll-line {
+    width: 40px; height: 1px;
+    background: linear-gradient(to right, var(--accent), transparent);
+    position: relative; overflow: hidden;
+  }
+  .scroll-line::after {
+    content: ''; position: absolute; inset: 0;
+    background: var(--accent2);
+    animation: scanLine 2s infinite;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex; gap: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin: 0 48px;
+    opacity: 0; animation: fadeUp 1s 1s forwards;
+  }
+  .stat {
+    flex: 1; padding: 28px 0;
+    display: flex; flex-direction: column; gap: 4px;
+    border-right: 1px solid var(--border);
+    padding-left: 32px;
+  }
+  .stat:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem; letter-spacing: 2px;
+    color: var(--accent2);
+  }
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted);
+  }
+
+  /* ── SECTION BASE ── */
+  section { position: relative; z-index: 1; }
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--cyan);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    letter-spacing: 2px; line-height: 1;
+    margin-bottom: 16px;
+  }
+  .section-desc {
+    color: var(--muted); font-size: 0.95rem;
+    line-height: 1.8; max-width: 500px;
+  }
+
+  /* ── SERVICES ── */
+  #services {
+    padding: 120px 48px;
+    background: linear-gradient(to bottom, var(--navy), var(--navy2));
+  }
+  .services-header {
+    display: flex; justify-content: space-between;
+    align-items: flex-end; margin-bottom: 64px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .service-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 48px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+    cursor: none;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(59,130,246,0.07), transparent);
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .service-card:hover { border-color: rgba(59,130,246,0.5); transform: translateY(-4px); }
+  .service-card:hover::before { opacity: 1; }
+
+  .service-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem; line-height: 1;
+    color: rgba(59,130,246,0.07);
+    position: absolute; top: 16px; right: 24px;
+  }
+  .service-icon {
+    width: 52px; height: 52px;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 28px;
+    transition: border-color 0.3s;
+  }
+  .service-card:hover .service-icon { border-color: var(--accent); }
+  .service-icon svg { width: 24px; height: 24px; stroke: var(--accent2); fill: none; stroke-width: 1.5; }
+
+  .service-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.9rem; letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .service-desc {
+    color: var(--muted); font-size: 0.88rem;
+    line-height: 1.7; margin-bottom: 28px;
+  }
+  .service-features {
+    list-style: none; display: flex; flex-direction: column; gap: 8px;
+  }
+  .service-features li {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 1px;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .service-features li::before {
+    content: '';
+    width: 16px; height: 1px;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .service-tag {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--accent), var(--cyan));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .service-card:hover .service-tag { transform: scaleX(1); }
+
+  /* ── HOW IT WORKS ── */
+  #how {
+    padding: 120px 48px;
+    background: var(--navy2);
+  }
+  .steps-container {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: start;
+    margin-top: 64px;
+  }
+  .step {
+    display: flex; gap: 24px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem; letter-spacing: 2px;
+    color: var(--accent);
+    opacity: 0.5; line-height: 1;
+    min-width: 56px;
+  }
+  .step-content h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem; letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .step-content p {
+    color: var(--muted); font-size: 0.88rem; line-height: 1.7;
+  }
+  .steps-visual {
+    background: linear-gradient(135deg, var(--navy3), var(--steel));
+    border: 1px solid var(--border);
+    padding: 48px;
+    position: sticky; top: 120px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .phone-mockup {
+    width: 100%; aspect-ratio: 9/16;
+    background: var(--navy);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .phone-notch {
+    width: 120px; height: 28px;
+    background: var(--navy3);
+    border-radius: 0 0 16px 16px;
+    margin: 0 auto;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .notch-dot { width: 8px; height: 8px; background: var(--steel); border-radius: 50%; }
+  .notch-bar { width: 40px; height: 4px; background: var(--steel); border-radius: 2px; }
+  .phone-screen {
+    flex: 1; padding: 20px 16px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .app-header-mock {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem; letter-spacing: 3px;
+    color: var(--accent2);
+  }
+  .app-card-mock {
+    background: var(--navy3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 0.7rem; color: var(--muted);
+  }
+  .app-card-mock strong {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 1px;
+    color: var(--white); margin-bottom: 6px;
+  }
+  .mock-bar {
+    height: 4px; background: var(--border);
+    border-radius: 2px; margin-top: 8px; overflow: hidden;
+  }
+  .mock-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--accent), var(--cyan));
+    border-radius: 2px;
+  }
+  .mock-btn {
+    background: var(--accent);
+    color: var(--navy);
+    border-radius: 4px;
+    padding: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 1px;
+    text-align: center; text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  /* ── APP SECTION ── */
+  #app {
+    padding: 120px 48px;
+    background: linear-gradient(to bottom, var(--navy2), var(--navy));
+    position: relative;
+    overflow: hidden;
+  }
+  #app::before {
+    content: '';
+    position: absolute;
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(59,130,246,0.06), transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+  }
+  .app-layout {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+    position: relative; z-index: 1;
+  }
+  .app-features { display: flex; flex-direction: column; gap: 0; }
+  .app-feature {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex; gap: 20px; align-items: flex-start;
+    cursor: none;
+    transition: padding-left 0.3s;
+  }
+  .app-feature:hover { padding-left: 12px; }
+  .app-feature:last-child { border-bottom: none; }
+  .feat-icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--cyan);
+  }
+  .feat-icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+  .feat-text h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem; letter-spacing: 1px;
+    margin-bottom: 6px; color: var(--white);
+  }
+  .feat-text p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  .app-badges { display: flex; gap: 12px; margin-top: 40px; }
+  .badge {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 12px 20px;
+    cursor: none;
+    transition: border-color 0.3s;
+  }
+  .badge:hover { border-color: var(--accent); }
+  .badge svg { width: 20px; height: 20px; fill: var(--muted); }
+  .badge span { font-size: 0.75rem; color: var(--muted); font-family: 'Space Mono', monospace; letter-spacing: 1px; }
+
+  /* Big phones visual */
+  .phones-visual {
+    display: flex; gap: 20px; align-items: flex-end;
+    justify-content: center;
+  }
+  .big-phone {
+    width: 160px;
+    background: linear-gradient(135deg, var(--navy3), var(--steel));
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 12px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 60px rgba(59,130,246,0.1);
+    animation: float 4s ease-in-out infinite;
+  }
+  .big-phone:nth-child(2) {
+    width: 180px;
+    animation-delay: -1s;
+  }
+  .big-phone:nth-child(3) {
+    width: 140px;
+    animation-delay: -2.5s;
+  }
+  .bp-inner {
+    background: var(--navy);
+    border-radius: 20px;
+    aspect-ratio: 9/18;
+    padding: 16px 12px;
+    display: flex; flex-direction: column; gap: 8px;
+    overflow: hidden;
+  }
+  .bp-topbar {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .bp-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+  .bp-title { font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 2px; color: var(--accent2); }
+  .bp-card {
+    background: var(--navy3);
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 0.5rem;
+    color: var(--muted);
+  }
+  .bp-card-title { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--white); margin-bottom: 4px; }
+  .bp-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 6px; }
+  .bp-bar-fill { height: 100%; background: linear-gradient(to right, var(--accent), var(--cyan)); border-radius: 2px; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 48px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--navy);
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem; letter-spacing: 3px;
+  }
+  .footer-logo span { color: var(--accent); }
+  footer p { font-size: 0.75rem; color: var(--muted); font-family: 'Space Mono', monospace; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a {
+    text-decoration: none; color: var(--muted);
+    font-size: 0.7rem; font-family: 'Space Mono', monospace;
+    letter-spacing: 1px; transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--accent2); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeLeft {
+    from { opacity: 0; transform: translate(40px, -50%); }
+    to { opacity: 0.85; transform: translate(0, -50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-16px); }
+  }
+  @keyframes scanLine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* Reveal on scroll */
+  .reveal {
+    opacity: 0; transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    nav ul { display: none; }
+    #hero { padding: 100px 24px 60px; }
+    .hero-visual { display: none; }
+    .stats-bar { margin: 0 24px; flex-wrap: wrap; }
+    .stat { min-width: 50%; }
+    #services, #how, #app { padding: 80px 24px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .services-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .steps-container { grid-template-columns: 1fr; }
+    .app-layout { grid-template-columns: 1fr; }
+    .phones-visual { display: none; }
+    footer { flex-direction: column; gap: 24px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Motor<span>aba</span></a>
+  <ul>
+    <li><a href="#services">Hizmetler</a></li>
+    <li><a href="#how">Nasıl Çalışır</a></li>
+    <li><a href="#app">Uygulama</a></li>
+  </ul>
+  <button class="nav-btn">Randevu Al</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="hero-eyebrow">// Araç Hizmetleri Platformu</div>
+  <h1 class="hero-title">
+    Aracınız<br>
+    <em>Hak Ettiği</em><br>
+    Bakımı<br>Alıyor
+  </h1>
+  <p class="hero-sub">Yıkama, tamir ve muayene hizmetlerini tek platformda yönetin. Akıllı randevu sistemi, anlık takip, sertifikalı ustalar.</p>
+
+  <div class="hero-ctas">
+    <button class="btn-primary">Hemen Başla</button>
+    <button class="btn-ghost">Nasıl Çalışır?</button>
+  </div>
+
+  <!-- Car SVG illustration -->
+  <div class="hero-visual">
+    <svg class="car-svg" viewBox="0 0 600 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Car body -->
+      <path d="M80 200 L80 170 L140 130 L220 110 L380 110 L460 140 L520 170 L520 200 Z" fill="rgba(26,37,80,0.8)" stroke="rgba(59,130,246,0.5)" stroke-width="1.5"/>
+      <!-- Roof -->
+      <path d="M160 170 L200 130 L380 130 L420 170 Z" fill="rgba(17,27,58,0.9)" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+      <!-- Windows -->
+      <path d="M175 168 L205 138 L295 138 L295 168 Z" fill="rgba(59,130,246,0.12)" stroke="rgba(59,130,246,0.4)" stroke-width="1"/>
+      <path d="M305 168 L305 138 L395 138 L415 168 Z" fill="rgba(59,130,246,0.12)" stroke="rgba(59,130,246,0.4)" stroke-width="1"/>
+      <!-- Wheels -->
+      <circle cx="160" cy="204" r="32" fill="rgba(10,15,30,0.9)" stroke="rgba(59,130,246,0.5)" stroke-width="1.5"/>
+      <circle cx="160" cy="204" r="18" fill="rgba(26,37,80,0.8)" stroke="rgba(96,165,250,0.6)" stroke-width="1"/>
+      <circle cx="160" cy="204" r="6" fill="rgba(59,130,246,0.8)"/>
+      <circle cx="440" cy="204" r="32" fill="rgba(10,15,30,0.9)" stroke="rgba(59,130,246,0.5)" stroke-width="1.5"/>
+      <circle cx="440" cy="204" r="18" fill="rgba(26,37,80,0.8)" stroke="rgba(96,165,250,0.6)" stroke-width="1"/>
+      <circle cx="440" cy="204" r="6" fill="rgba(59,130,246,0.8)"/>
+      <!-- Ground line -->
+      <line x1="40" y1="236" x2="560" y2="236" stroke="rgba(59,130,246,0.2)" stroke-width="1"/>
+      <!-- Headlight glow -->
+      <ellipse cx="520" cy="175" rx="20" ry="10" fill="rgba(96,165,250,0.3)" filter="blur(4px)"/>
+      <circle cx="520" cy="175" r="6" fill="rgba(96,165,250,0.8)"/>
+      <!-- Scanlines detail -->
+      <line x1="80" y1="185" x2="520" y2="185" stroke="rgba(59,130,246,0.08)" stroke-width="1"/>
+      <line x1="80" y1="195" x2="520" y2="195" stroke="rgba(59,130,246,0.08)" stroke-width="1"/>
+      <!-- Grid floor -->
+      <line x1="40" y1="240" x2="560" y2="240" stroke="rgba(59,130,246,0.1)" stroke-width="0.5"/>
+      <line x1="40" y1="250" x2="560" y2="250" stroke="rgba(59,130,246,0.07)" stroke-width="0.5"/>
+      <line x1="40" y1="260" x2="560" y2="260" stroke="rgba(59,130,246,0.04)" stroke-width="0.5"/>
+    </svg>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Keşfet
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar reveal" style="justify-content:center;">
+  <div class="stat" style="border-right:none; padding-left:0; align-items:center; text-align:center;">
+    <span class="stat-num">7/24</span>
+    <span class="stat-label">Kesintisiz Hizmet</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header reveal">
+    <div>
+      <p class="section-tag">// 01 — Hizmetler</p>
+      <h2 class="section-title">Tüm İhtiyaçlar<br>Tek Çatı Altında</h2>
+    </div>
+    <p class="section-desc">Aracınız için profesyonel çözümler. Hızlı randevu, anlık durum takibi ve garantili hizmet.</p>
+  </div>
+
+  <div class="services-grid">
+    <!-- Yıkama -->
+    <div class="service-card reveal">
+      <span class="service-num">01</span>
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 16s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="3" y1="20" x2="21" y2="20"/></svg>
+      </div>
+      <h3 class="service-name">Araç Yıkama</h3>
+      <p class="service-desc">İç ve dış temizlik, buharlı yıkama, cilalama. Profesyonel ekipman ve çevre dostu ürünler.</p>
+      <ul class="service-features">
+        <li>Dış yıkama & kurutma</li>
+        <li>İç mekan detay temizliği</li>
+        <li>Buharlı derin temizlik</li>
+        <li>Seramik kaplama</li>
+      </ul>
+      <div class="service-tag"></div>
+    </div>
+
+    <!-- Tamir -->
+    <div class="service-card reveal" style="transition-delay:0.1s">
+      <span class="service-num">02</span>
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <h3 class="service-name">Araç Tamir</h3>
+      <p class="service-desc">Motor, fren, süspansiyon ve elektrik sistemleri. Yetkili teknisyenler, orijinal yedek parça.</p>
+      <ul class="service-features">
+        <li>Motor bakım & onarım</li>
+        <li>Fren sistemi revizyonu</li>
+        <li>Elektrik & elektronik</li>
+        <li>Lastik & rot-balans</li>
+      </ul>
+      <div class="service-tag"></div>
+    </div>
+
+    <!-- Lastik -->
+    <div class="service-card reveal" style="transition-delay:0.2s">
+      <span class="service-num">03</span>
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/></svg>
+      </div>
+      <h3 class="service-name">Araç Lastiği</h3>
+      <p class="service-desc">Lastik değişimi, rot-balans ayarı ve hava basıncı kontrolü. Güvenli sürüş için doğru lastik seçimi.</p>
+      <ul class="service-features">
+        <li>Lastik değişimi & montaj</li>
+        <li>Rot-balans ayarı</li>
+        <li>Hava basıncı & kontrol</li>
+        <li>Mevsimlik lastik depolama</li>
+      </ul>
+      <div class="service-tag"></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="reveal">
+    <p class="section-tag">// 02 — Süreç</p>
+    <h2 class="section-title">3 Adımda<br>Hizmet Al</h2>
+  </div>
+
+  <div class="steps-container">
+    <div>
+      <div class="step reveal">
+        <span class="step-num">01</span>
+        <div class="step-content">
+          <h3>Hizmeti Seç</h3>
+          <p>Yıkama, tamir, lastik ya da daha fazlası — ihtiyacını belirle, platforma gir.</p>
+        </div>
+      </div>
+      <div class="step reveal" style="transition-delay:0.1s">
+        <span class="step-num">02</span>
+        <div class="step-content">
+          <h3>Sana En Yakın İşletmeyi Seç</h3>
+          <p>Konumuna göre sertifikalı işletmeleri listele, puanları karşılaştır ve randevunu oluştur.</p>
+        </div>
+      </div>
+      <div class="step reveal" style="transition-delay:0.2s">
+        <span class="step-num">03</span>
+        <div class="step-content">
+          <h3>Aracını Bırak, Keyfine Bak</h3>
+          <p>Aracını teslim et ve işlem bitince bildirim al. Hazır olduğunda gel, aracını teslim al.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone mockup -->
+    <div class="steps-visual reveal" style="transition-delay:0.3s">
+      <div class="phone-mockup">
+        <div class="phone-notch">
+          <div class="notch-dot"></div>
+          <div class="notch-bar"></div>
+        </div>
+        <div class="phone-screen">
+          <div class="app-header-mock">MOTORABA</div>
+          <div class="app-card-mock">
+            <strong>Aktif Randevu</strong>
+            Opel Astra — Yıkama
+            <div class="mock-bar"><div class="mock-bar-fill" style="width:65%"></div></div>
+          </div>
+          <div class="app-card-mock">
+            <strong>Tamir Durumu</strong>
+            Fren balatası değişimi
+            <div class="mock-bar"><div class="mock-bar-fill" style="width:90%"></div></div>
+          </div>
+          <div class="app-card-mock">
+            <strong>Yaklaşan Muayene</strong>
+            15 gün kaldı
+            <div class="mock-btn">Randevu Al</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APP SECTION -->
+<section id="app">
+  <div class="app-layout">
+    <div>
+      <p class="section-tag reveal">// 03 — Uygulama</p>
+      <h2 class="section-title reveal">CW App ile<br>Her Şey<br>Cebinizde</h2>
+      <p class="section-desc reveal" style="margin-bottom:40px; transition-delay:0.1s">Araç yönetimini kolaylaştıran akıllı uygulama. İşletmeler ve araç sahipleri için özel paneller.</p>
+
+      <div class="app-features reveal" style="transition-delay:0.15s">
+        <div class="app-feature">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          </div>
+          <div class="feat-text">
+            <h4>Gerçek Zamanlı Takip</h4>
+            <p>Aracınızın servis sürecini anlık olarak izleyin. Hiçbir adımı kaçırmayın.</p>
+          </div>
+        </div>
+        <div class="app-feature">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="feat-text">
+            <h4>Akıllı Randevu</h4>
+            <p>Uygun zamanları otomatik öner, hatırlatma bildirimleri gönder.</p>
+          </div>
+        </div>
+        <div class="app-feature">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="feat-text">
+            <h4>İşletme Paneli</h4>
+            <p>Servis noktaları için gelir takibi, müşteri yönetimi ve özel dashboard.</p>
+          </div>
+        </div>
+        <div class="app-feature">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.72 16z"/></svg>
+          </div>
+          <div class="feat-text">
+            <h4>7/24 Destek</h4>
+            <p>Herhangi bir sorun için anlık chat desteği ve yardım hattı.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-badges reveal" style="transition-delay:0.3s">
+        <div style="display:flex; flex-direction:column; gap:12px; align-items:flex-start;">
+          <div style="display:flex; gap:12px;">
+            <div class="badge">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+              <span>App Store</span>
+            </div>
+            <div class="badge">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3.18 23.76c.28.15.61.18.94.07l12.46-7.2-2.81-2.81-10.59 9.94zM20.12 10.04L17.7 8.67l-3.14 3.14 3.14 3.14 2.45-1.41c.7-.4.7-1.1.0-1.5zM2.18.24C1.86.43 1.63.77 1.63 1.21v21.58c0 .44.23.78.55.97l.1.05 12.09-12.09v-.28L2.27.18l-.09.06z"/></svg>
+              <span>Google Play</span>
+            </div>
+          </div>
+          <div style="
+            font-family: 'Space Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--cyan);
+            border: 1px solid rgba(6,182,212,0.25);
+            padding: 8px 20px;
+            width: 100%;
+            text-align: center;
+            animation: pulse 2.5s ease-in-out infinite;
+          ">✦ Çok Yakında ✦</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phones -->
+    <div class="phones-visual reveal" style="transition-delay:0.2s">
+      <div class="big-phone">
+        <div class="bp-inner">
+          <div class="bp-topbar"><div class="bp-dot"></div><div class="bp-title">MOT</div></div>
+          <div class="bp-card"><div class="bp-card-title">Araçlarım</div>2 aktif araç</div>
+        </div>
+      </div>
+      <div class="big-phone">
+        <div class="bp-inner">
+          <div class="bp-topbar"><div class="bp-dot"></div><div class="bp-title">MOTORABA</div></div>
+          <div class="bp-card"><div class="bp-card-title">Gelir Özeti</div>Bu Ay: ₺24,800<div class="bp-bar"><div class="bp-bar-fill" style="width:72%"></div></div></div>
+          <div class="bp-card"><div class="bp-card-title">Randevular</div>12 bugün aktif</div>
+          <div class="bp-card"><div class="bp-card-title">Değerlendirme</div>★ 4.9 / 5.0</div>
+        </div>
+      </div>
+      <div class="big-phone">
+        <div class="bp-inner">
+          <div class="bp-topbar"><div class="bp-dot"></div><div class="bp-title">MOT</div></div><div class="bp-bar"><div class="bp-bar-fill" style="width:30%"></div></div></div>
+          <div class="bp-card"><div class="bp-card-title">Bildirimler</div>3 yeni mesaj</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Motor<span>aba</span></div>
+  <p>© 2025 Motoraba. Tüm hakları saklıdır.</p>
+  <div class="footer-links">
+    <a href="#">Gizlilik</a>
+    <a href="#">Koşullar</a>
+    <a href="#">İletişim</a>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`;
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('button, a, .service-card, .app-feature, .badge').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform += ' scale(1.8)';
+      ring.style.width = '56px'; ring.style.height = '56px';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.width = '36px'; ring.style.height = '36px';
+    });
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Parallax orbs
+  document.addEventListener('mousemove', e => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 30;
+    const y = (e.clientY / window.innerHeight - 0.5) * 30;
+    document.querySelectorAll('.orb').forEach((orb, i) => {
+      const f = i === 0 ? 1 : -0.6;
+      orb.style.transform = `translate(${x * f}px, ${y * f}px)`;
+    });
+  });
+
+  // Stats bar - sadece 7/24 kaldı, counter animasyonu gerekmez
+  const statsBar = document.querySelector('.stats-bar');
+  if (statsBar) statsBar.classList.add('visible');
+</script>
+</body>
+</html>
