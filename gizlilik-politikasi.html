@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  ŞABLON NOTU (ziyaretçilere görünmez):
+  Aşağıdaki metin standart bir gizlilik politikası şablonudur.
+  Lütfen mobil uygulamanızdaki RESMİ gizlilik politikası metniyle
+  değiştirin veya köşeli parantezli [...] alanları doldurun.
+  ============================================================
+-->
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gizlilik Politikası — Motoraba</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a0f1e;
+    --navy2: #0d1530;
+    --navy3: #111b3a;
+    --accent: #3b82f6;
+    --accent2: #60a5fa;
+    --cyan: #06b6d4;
+    --white: #f0f4ff;
+    --text: rgba(240,244,255,0.82);
+    --muted: #6b7fa8;
+    --border: rgba(59,130,246,0.18);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 48px;
+    background: linear-gradient(to bottom, rgba(10,15,30,0.97), rgba(10,15,30,0.85));
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.7rem; letter-spacing: 3px;
+    color: var(--white); text-decoration: none;
+  }
+  .logo span { color: var(--accent); }
+  .back-link {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    border: 1px solid var(--border); padding: 9px 18px;
+    transition: all 0.3s;
+  }
+  .back-link:hover { color: var(--accent2); border-color: var(--accent); }
+
+  /* ── CONTENT ── */
+  .legal-wrap {
+    position: relative; z-index: 1;
+    max-width: 820px; margin: 0 auto;
+    padding: 80px 24px 100px;
+  }
+  .eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--cyan); margin-bottom: 16px;
+  }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.6rem, 6vw, 4rem);
+    line-height: 1; letter-spacing: 2px;
+    color: var(--white); margin-bottom: 14px;
+  }
+  .updated {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 1px; color: var(--muted);
+    padding-bottom: 28px; margin-bottom: 36px;
+    border-bottom: 1px solid var(--border);
+  }
+  .intro { color: var(--text); margin-bottom: 8px; }
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem; letter-spacing: 1.5px;
+    color: var(--accent2); margin: 44px 0 14px;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  h2 .num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem; color: var(--cyan); letter-spacing: 1px;
+  }
+  p { margin-bottom: 14px; color: var(--text); }
+  ul { margin: 0 0 14px 0; padding-left: 0; list-style: none; }
+  ul li {
+    position: relative; padding-left: 22px; margin-bottom: 10px;
+    color: var(--text);
+  }
+  ul li::before {
+    content: ''; position: absolute; left: 0; top: 13px;
+    width: 12px; height: 1px; background: var(--accent);
+  }
+  strong { color: var(--white); font-weight: 500; }
+  a { color: var(--accent2); }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1;
+    padding: 40px 48px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px;
+    background: var(--navy);
+  }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 3px; color: var(--white); }
+  .footer-logo span { color: var(--accent); }
+  footer p { font-size: 0.72rem; color: var(--muted); font-family: 'Space Mono', monospace; margin: 0; }
+  .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+  .footer-links a { text-decoration: none; color: var(--muted); font-size: 0.7rem; font-family: 'Space Mono', monospace; letter-spacing: 1px; transition: color 0.3s; }
+  .footer-links a:hover { color: var(--accent2); }
+
+  @media (max-width: 700px) {
+    .topbar { padding: 14px 20px; }
+    .legal-wrap { padding: 56px 20px 80px; }
+    footer { padding: 32px 20px; flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="index.html" class="logo">Moto<span>Raba</span></a>
+  <a href="index.html" class="back-link">← Ana Sayfa</a>
+</header>
+
+<main class="legal-wrap">
+  <p class="eyebrow">// Gizlilik</p>
+  <h1>Gizlilik Politikası</h1>
+  <p class="updated">Son güncelleme: Haziran 2026</p>
+
+  <p class="intro">Motoraba olarak gizliliğinize önem veriyoruz. Bu politika, Motoraba mobil uygulaması ve web sitesi aracılığıyla hangi bilgileri topladığımızı, bunları nasıl kullandığımızı ve haklarınızı açıklar. Hizmetlerimizi kullanarak bu politikada açıklanan uygulamaları kabul etmiş olursunuz.</p>
+
+  <h2><span class="num">01</span> Topladığımız Bilgiler</h2>
+  <ul>
+    <li><strong>Hesap bilgileri:</strong> ad, soyad, telefon numarası ve e-posta adresi gibi kayıt sırasında sağladığınız bilgiler</li>
+    <li><strong>Araç bilgileri:</strong> plaka, marka, model gibi hizmet için gereken bilgiler</li>
+    <li><strong>Konum bilgileri:</strong> size en yakın hizmet noktalarını gösterebilmek için (izin verdiğiniz takdirde)</li>
+    <li><strong>Kullanım bilgileri:</strong> uygulama içi etkileşimler, randevu ve işlem geçmişi</li>
+    <li><strong>Cihaz bilgileri:</strong> cihaz türü, işletim sistemi, uygulama sürümü ve teknik log kayıtları</li>
+  </ul>
+
+  <h2><span class="num">02</span> Bilgileri Nasıl Kullanırız</h2>
+  <ul>
+    <li>Talep ettiğiniz hizmetleri sunmak ve randevularınızı yönetmek</li>
+    <li>Sizi uygun iş ortağı hizmet noktalarıyla eşleştirmek</li>
+    <li>Hesabınızla ilgili bildirim ve güncellemeleri iletmek</li>
+    <li>Hizmet kalitesini ölçmek, geliştirmek ve teknik sorunları gidermek</li>
+    <li>İzin verdiğiniz takdirde kampanya ve duyuruları paylaşmak</li>
+    <li>Yasal yükümlülükleri yerine getirmek ve güvenliği sağlamak</li>
+  </ul>
+
+  <h2><span class="num">03</span> Bilgi Paylaşımı</h2>
+  <p>Kişisel bilgilerinizi satmıyoruz. Bilgileriniz yalnızca aşağıdaki durumlarda paylaşılır:</p>
+  <ul>
+    <li>Talebinizi yerine getirmek amacıyla seçtiğiniz iş ortağı hizmet noktalarıyla</li>
+    <li>Bizim adımıza hizmet veren altyapı, barındırma ve ödeme sağlayıcılarıyla</li>
+    <li>Yasal bir zorunluluk veya yetkili makamların talebi halinde</li>
+  </ul>
+
+  <h2><span class="num">04</span> Konum Verileri</h2>
+  <p>Konum verisi, size en yakın hizmet noktasını bulabilmeniz için kullanılır. Konum izni isteğe bağlıdır; cihazınızın ayarlarından dilediğiniz zaman bu izni kapatabilirsiniz. İzni kapattığınızda konuma dayalı bazı özellikler sınırlı çalışabilir.</p>
+
+  <h2><span class="num">05</span> Çerezler</h2>
+  <p>Web sitemiz, temel işlevselliği sağlamak ve kullanım deneyimini iyileştirmek için çerezler ve benzeri teknolojiler kullanabilir. Tarayıcı ayarlarınızdan çerezleri yönetebilir veya engelleyebilirsiniz.</p>
+
+  <h2><span class="num">06</span> Veri Güvenliği</h2>
+  <p>Bilgilerinizi yetkisiz erişime, kayba ve kötüye kullanıma karşı korumak için makul teknik ve idari tedbirler uyguluyoruz. Bununla birlikte, internet üzerinden hiçbir aktarımın veya saklamanın %100 güvenli olduğu garanti edilemez.</p>
+
+  <h2><span class="num">07</span> Verilerin Saklanması</h2>
+  <p>Kişisel verilerinizi, toplanma amacının gerektirdiği süre boyunca ve ilgili mevzuatta öngörülen yasal saklama süreleri kapsamında saklarız. Bu sürelerin sonunda verileriniz silinir, yok edilir veya anonim hale getirilir.</p>
+
+  <h2><span class="num">08</span> Çocukların Gizliliği</h2>
+  <p>Hizmetlerimiz 18 yaşın altındaki kişilere yönelik değildir. Bilerek 18 yaş altı kullanıcılardan kişisel veri toplamayız.</p>
+
+  <h2><span class="num">09</span> Haklarınız</h2>
+  <p>6698 sayılı KVKK kapsamında kişisel verilerinize ilişkin haklarınız bulunmaktadır. Bu haklar ve başvuru yöntemleri hakkında ayrıntılı bilgi için <a href="kvkk.html">KVKK Aydınlatma Metni</a> sayfamızı inceleyebilirsiniz.</p>
+
+  <h2><span class="num">10</span> Politikadaki Değişiklikler</h2>
+  <p>Bu gizlilik politikasını zaman zaman güncelleyebiliriz. Önemli değişiklikleri uygulama veya web sitesi üzerinden duyururuz. Güncel sürümün yürürlük tarihi sayfanın başında belirtilir.</p>
+
+  <h2><span class="num">11</span> İletişim</h2>
+  <p>Gizlilikle ilgili soru ve talepleriniz için <a href="mailto:[iletişim e-posta adresi]">[iletişim e-posta adresi]</a> adresinden bizimle iletişime geçebilirsiniz.</p>
+</main>
+
+<footer>
+  <div class="footer-logo">Moto<span>Raba</span></div>
+  <p>© 2026 Motoraba Otomotiv Hizmetleri Lojistik Ticaret A.Ş. — Tüm hakları saklıdır.</p>
+  <div class="footer-links">
+    <a href="index.html">Ana Sayfa</a>
+    <a href="gizlilik-politikasi.html">Gizlilik Politikası</a>
+    <a href="kvkk.html">KVKK</a>
+  </div>
+</footer>
+
+</body>
+</html>
