@@ -137,8 +137,8 @@
 
   .hero-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(4rem, 10vw, 10rem);
-    line-height: 0.92;
+    font-size: clamp(3rem, 6vw, 5rem);
+    line-height: 0.98;
     letter-spacing: 2px;
     max-width: 900px;
     opacity: 0;
@@ -261,6 +261,17 @@
 
   /* ── SECTION BASE ── */
   section { position: relative; z-index: 1; }
+  /* Sabit menü altında kalmasın diye anchor kayma payı */
+  section[id] { scroll-margin-top: 96px; }
+  /* Hakkımızda & İş Ortaklığı: aynı iç boşluk + arkaplan kare deseni (hero ile uyumlu) */
+  #us, #partner {
+    padding: 120px 48px;
+    background-color: var(--navy2);
+    background-image:
+      linear-gradient(rgba(59,130,246,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
   .section-tag {
     font-family: 'Space Mono', monospace;
     font-size: 0.65rem; letter-spacing: 4px;
@@ -621,7 +632,7 @@
     .hero-visual { display: none; }
     .stats-bar { margin: 0 24px; flex-wrap: wrap; }
     .stat { min-width: 50%; }
-    #services, #how, #app { padding: 80px 24px; }
+    #services, #how, #app, #us, #partner { padding: 80px 24px; }
     .services-grid { grid-template-columns: 1fr; }
     .services-header { flex-direction: column; align-items: flex-start; gap: 16px; }
     .steps-container { grid-template-columns: 1fr; }
@@ -662,19 +673,6 @@
     Android ve İOS<br> Platformlarında<br> Yerimizi Alıyoruz
   </h1>
   <p class="hero-sub">İster bir aracınız ister daha fazla aracınız için tüm Türkiye'de yaygın İş Ortaklarımız ile hizmet vermeye başlayacağız.</p>
-
-<!-- HERO -->
-<section id="hero">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-
-  <div class="hero-eyebrow">// Araç Hizmetleri Platformu</div>
-  <h1 class="hero-title">
-    Aracınız<br>
-    <em>Hak Ettiği</em><br>
-    Bakımı<br>Alıyor
-  </h1>
-  <p class="hero-sub">Yıkama, Sigorta ve muayene hizmetlerini tek platformda yönetin. Akıllı randevu sistemi, anlık takip ve daha fazlası..</p>
 
   <div class="hero-ctas">
     <button class="btn-primary">Hemen Başla</button>
@@ -1003,7 +1001,8 @@
   <p>Motoraba Otomotiv Hizmetleri Lojistik Ticaret A.Ş.</p>
   <p>© 2026 Motoraba. Tüm hakları saklıdır.</p>
   <div class="footer-links">
-    <a href="#">Gizlilik</a>
+    <a href="gizlilik-politikasi.html">Gizlilik Politikası</a>
+    <a href="kvkk.html">KVKK</a>
     <a href="#">Koşullar</a>
     <a href="#">İletişim</a>
   </div>
