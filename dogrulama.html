@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Motoraba Doğrulama</title>
+<!--
+  Motoraba ve Motoraba İşletme uygulamalarının içinde (iframe) açılan doğrulama sayfası.
+  Neden var: Cloudflare Turnstile yalnızca https adresli sayfalarda çalışır; iOS'ta uygulamanın
+  iç adresi capacitor://localhost olduğu için kutu uygulamanın içinde doğrudan çalışmaz.
+  Bu sayfa kutuyu motoraba.com üzerinde gösterir ve sonucu yalnızca Motoraba uygulamalarına iletir.
+  Tek başına açıldığında boş görünür; bu normaldir. Site adresi: https://motoraba.com/dogrulama.html
+-->
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
+  #kutu { min-height: 65px; }
+</style>
+</head>
+<body>
+<div id="kutu"></div>
+<script>
+  var SITEKEY = '0x4AAAAAADqfjc9MaHSquvGu';
+  // Sonucun iletileceği yerler: yalnızca Motoraba uygulamalarının iç adresleri (iOS / Android)
+  var IZINLI = ['capacitor://localhost', 'https://localhost'];
+
+  var kimlik = (new URLSearchParams(location.search).get('id') || '').replace(/[^a-z0-9-]/gi, '').slice(0, 40);
+  var ust = (location.ancestorOrigins && location.ancestorOrigins.length) ? location.ancestorOrigins[0] : null;
+  var ustIzinli = ust !== null && IZINLI.indexOf(ust) !== -1;
+  var kutuNo = null;
+
+  function gonder(m) {
+    if (window.parent === window) return;
+    m.kaynak = 'motoraba-dogrulama';
+    m.id = kimlik;
+    if (ustIzinli) { window.parent.postMessage(m, '*'); return; }
+    if (ust !== null) return;                       // başka bir site gömmüş: hiçbir şey gönderme
+    IZINLI.forEach(function (o) { try { window.parent.postMessage(m, o); } catch (e) {} });
+  }
+
+  function basla() {
+    kutuNo = turnstile.render('#kutu', {
+      sitekey: SITEKEY,
+      size: 'flexible',
+      language: 'tr',
+      callback: function (t) { gonder({ token: t }); },
+      'expired-callback': function () { gonder({ token: '' }); },
+      'timeout-callback': function () { gonder({ token: '' }); },
+      'error-callback': function (kod) { gonder({ token: '', hata: String(kod || '') }); return true; }
+    });
+    gonder({ hazir: true });
+  }
+
+  // Uygulama "yenile" isterse (token tek kullanımlık)
+  window.addEventListener('message', function (e) {
+    if (IZINLI.indexOf(e.origin) === -1) return;
+    if (e.data && e.data.komut === 'sifirla' && kutuNo !== null) {
+      gonder({ token: '' });
+      try { turnstile.reset(kutuNo); } catch (x) {}
+    }
+  });
+</script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=basla" async defer></script>
+</body>
+</html>
