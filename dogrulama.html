@@ -20,7 +20,11 @@
 <body>
 <div id="kutu"></div>
 <script>
-  var SITEKEY = '0x4AAAAAADqfjc9MaHSquvGu';
+  // Açık anahtar uygulamadan gelir (?k=…); gelmezse aşağıdaki yedek kullanılır.
+  var SITEKEY = (function () {
+    var k = new URLSearchParams(location.search).get('k') || '';
+    return /^[0-9A-Za-z_-]{10,80}$/.test(k) ? k : '0x4AAAAAADqfjc9MaHSquvGu';
+  })();
   // Sonucun iletileceği yerler: yalnızca Motoraba uygulamalarının iç adresleri (iOS / Android)
   var IZINLI = ['capacitor://localhost', 'https://localhost'];
 
